@@ -10,5 +10,7 @@ enum ActionType: string
 {
     case ATTACK = 'attack';
     case HEAL = 'heal';
+    case HEAVY = 'heavy';
+    case RUN = 'run';
 
 }

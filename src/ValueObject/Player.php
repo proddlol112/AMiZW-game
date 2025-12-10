@@ -25,4 +25,7 @@ class Player
     {
         $this->hp = $hp;
     }
+    public function addHP(int $hp): void{
+        $this->hp += $hp;
+    }
 }

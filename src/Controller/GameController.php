@@ -29,7 +29,8 @@ class GameController extends AbstractController
         }
 
         return $this->render('game/index.html.twig', [
-                'state' => $session->get('state')
+                'state' => $session->get('state'),
+                "log" => $session->get('state')->getLog()
         ]);
     }
 
@@ -52,10 +53,24 @@ class GameController extends AbstractController
             case ActionType::ATTACK->value:
                 $dmg = DmgHelper::calculateDamage(8,18);
                 $state->getMonster()->takeDmg($dmg);
+                $state->addLog(sprintf("gracz zadał %d dng",$dmg));
                 break;
 
             case ActionType::HEAL->value:
+                $hp = 30;
+                $state->getplayer()->addHP($hp);
+                $state->addLog(sprintf("został ulepszony za %d hp",$hp));
                 break;
+                case ActionType::HEAVY->value:
+                    $dmg = DmgHelper::calculateDamage(12,22);
+                    $state->addLog(sprintf("gracz zadał %d dng",$dmg));
+                $state->getMonster()->takeDmg($dmg);
+                    break;
+
+            case ActionType::RUN->value:
+                $state->addLog(sprintf("gracz uziek z pola bitwy"));
+                $state->nextWave();
+                        break;
 
 
             default:
@@ -74,6 +89,7 @@ class GameController extends AbstractController
         if (!$state->isOver()) {
             $monsterDmg = DmgHelper::calculateDamage(6,14);
             $state->getPlayer()->takeDmg($monsterDmg);
+            $state->addLog(sprintf("potwur zadał %d dng",$monsterDmg));
             if ($state->getPlayer()->getHp() <= 0) {
                 $state->getPlayer()->setHp(0);
                 $state->endGame();
